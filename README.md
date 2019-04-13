@@ -20,7 +20,7 @@ Wiki-api is a rest api which provides extensible api for making bike wiki.
 
 ### Component 零件
 
-零件表，存储零件，关联一个零件类型,包含零件基础信息，如尺寸、重量、厂商、年份等
+零件表，存储零件，关联一个零件类型,包含零件基础信息，特殊属性，如尺寸、重量、厂商、年份等
 
 ### Category 目录
 
