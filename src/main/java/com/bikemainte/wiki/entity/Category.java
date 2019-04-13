@@ -1,17 +1,16 @@
 package com.bikemainte.wiki.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Entity to store category hierarchy for wiki category
@@ -24,7 +23,11 @@ import java.util.Set;
 @Setter
 @ToString
 @Entity
+@NoArgsConstructor
 public class Category extends AbstractEntity {
+
+    public static final String ROOT_CATEGORY_NAME = "ROOT";
+
     @ApiModelProperty(value = "目录名称", example = "Braking")
     @NaturalId
     private String name;
@@ -35,6 +38,7 @@ public class Category extends AbstractEntity {
     @ApiModelProperty(value = "父级目录")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
+    @JsonIgnore
     private Category parent;
 
     /**
@@ -42,7 +46,7 @@ public class Category extends AbstractEntity {
      */
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "parent",
-            cascade = CascadeType.REMOVE,
+            cascade = CascadeType.ALL,
             // 移除目录即同时移除子目录
             orphanRemoval = true)
     @ApiModelProperty(value = "子目录")
@@ -53,7 +57,16 @@ public class Category extends AbstractEntity {
      */
     @ManyToMany(mappedBy = "categories")
     @ApiModelProperty("目录下包含的零件类型")
-    private Set<ComponentType> components;
+    private Set<ComponentType> components = new HashSet<>();
+
+    public Category(String name) {
+        this.name = name;
+    }
+
+    public void addCategory(Category... categories) {
+        children.addAll(Arrays.asList(categories));
+        Arrays.stream(categories).forEach(c -> c.parent = this);
+    }
 
     @Override
     public boolean equals(Object o) {

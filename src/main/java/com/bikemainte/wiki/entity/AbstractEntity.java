@@ -2,7 +2,6 @@ package com.bikemainte.wiki.entity;
 
 import com.bikemainte.wiki.common.data.Operator;
 import com.bikemainte.wiki.common.data.view.EntityView;
-import com.bikemainte.wiki.util.OperatorConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.array.IntArrayType;
@@ -17,10 +16,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Convert;
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -70,15 +70,17 @@ public class AbstractEntity {
      * 创建人
      */
     @JsonView(EntityView.Detail.class)
-    @Convert(converter = OperatorConverter.class)
     @ApiModelProperty(hidden = true)
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     protected Operator creator;
 
     /**
      * 上次操作人
      */
     @JsonView(EntityView.Detail.class)
-    @Convert(converter = OperatorConverter.class)
     @ApiModelProperty(hidden = true)
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     protected Operator lastUpdater;
 }

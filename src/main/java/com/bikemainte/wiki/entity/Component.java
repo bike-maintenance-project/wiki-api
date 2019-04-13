@@ -10,7 +10,6 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,8 +28,8 @@ public class Component extends AbstractEntity {
     private String manufacturer;
     @ApiModelProperty(value = "model", example = "F 100 RLT")
     private String model;
-    @ApiModelProperty(value = "date of production", example = "2012-01-01")
-    private LocalDate date;
+    @ApiModelProperty(value = "year of production", example = "2012")
+    private Integer year;
     @ApiModelProperty(value = "size of component", example = "1.5")
     private String size;
     //    @ApiModelProperty(value = "unit of size",example = "cm")
@@ -45,6 +44,9 @@ public class Component extends AbstractEntity {
     private BigDecimal weightReal;
 
     private String comment;
+
+    @ApiModelProperty("零件级别")
+    private String grading;
 
     /**
      * 其他属性，用于保存动态配置的零件属性
@@ -64,11 +66,11 @@ public class Component extends AbstractEntity {
         Component component = (Component) o;
         return Objects.equals(manufacturer, component.manufacturer) &&
                 Objects.equals(model, component.model) &&
-                Objects.equals(date, component.date);
+                Objects.equals(year, component.year);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(manufacturer, model, date);
+        return Objects.hash(manufacturer, model, year);
     }
 }
