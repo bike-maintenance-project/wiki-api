@@ -1,20 +1,18 @@
 package com.bikemainte.wiki.entity;
 
+import com.bikemainte.wiki.common.data.CustomProperty;
 import com.bikemainte.wiki.common.data.enums.WeightUnitEnum;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -25,10 +23,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ApiModel("零件")
-@TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class),
-        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-})
 public class Component extends AbstractEntity {
 
     @ApiModelProperty(value = "manufacturer", example = "Fox")
@@ -54,10 +48,14 @@ public class Component extends AbstractEntity {
 
     /**
      * 其他属性，用于保存动态配置的零件属性
-     * todo: 应该还需要设计一个模板数据库存放属性模板数据
      */
-    @Column(name = "properties", columnDefinition = "jsonb")
-    private Map<String, String> properties;
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    private List<CustomProperty> properties = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "component_type_id")
+    private ComponentType type;
 
     @Override
     public boolean equals(Object o) {

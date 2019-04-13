@@ -9,3 +9,7 @@ Wiki-api is a rest api which provides extensible api for making bike wiki.
 - [ ] concrete component api
 - [ ] components compatibility api
 - [ ] blueprint api
+
+## Database design
+
+![db](docs/db_v1.png)

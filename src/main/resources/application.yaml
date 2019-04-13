@@ -1,0 +1,18 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: ${DDL_AUTO:create}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_URL:localhost:5432}/bike_wiki
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PWD:postgres}
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss

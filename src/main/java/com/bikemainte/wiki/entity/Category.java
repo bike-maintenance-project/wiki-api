@@ -23,7 +23,8 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class Category {
+@Entity
+public class Category extends AbstractEntity {
     @ApiModelProperty(value = "目录名称", example = "Braking")
     @NaturalId
     private String name;

@@ -1,6 +1,6 @@
 package com.bikemainte.wiki.entity;
 
-import com.bikemainte.wiki.common.data.CustomProperty;
+import com.bikemainte.wiki.common.data.CustomPropertyDefinition;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -9,12 +9,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 零件类型，保存零件动态属性模板
@@ -34,21 +35,47 @@ import java.util.Set;
 })
 public class ComponentType extends AbstractEntity {
 
+    @NaturalId
     @ApiModelProperty(value = "零件类型名称", example = "Cables")
     private String name;
 
-    @Column(name = "properties", columnDefinition = "jsonb")
+    private String comment;
+
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     @ApiModelProperty(value = "自定义字段列表")
-    private List<CustomProperty> properties;
+    private List<CustomPropertyDefinition> propertyDefs = new ArrayList<>();
 
     /**
      * 零件类型所属的目录
      */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "componenttype_categories",
-            joinColumns = @JoinColumn(name = "componenttype_id"),
+            name = "component_type_categories",
+            joinColumns = @JoinColumn(name = "component_type_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<Category> categories;
+
+    @OneToMany(
+            mappedBy = "type",
+            cascade = CascadeType.ALL,
+            // 移除零件类型时，同时移除所有零件
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private Set<Component> components = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ComponentType that = (ComponentType) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }
