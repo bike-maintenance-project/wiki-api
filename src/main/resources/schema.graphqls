@@ -1,0 +1,9 @@
+type Query{
+    category(query: String): [Category]
+}
+
+type Category{
+    id: ID
+    name: String
+    children: [Category]
+}

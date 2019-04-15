@@ -44,6 +44,7 @@ import java.time.LocalDateTime;
         @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
 })
 public class AbstractEntity {
+    public static final String[] DEFAULT_SORT_FIELDS = new String[]{"lastUpdateTime"};
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
